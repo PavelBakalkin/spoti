@@ -8,7 +8,7 @@ import { useAppSelector } from "../store/hooks";
 
 function App() {
   const logInToken = useAppSelector((state) => state.logIn.token);
-  console.log(logInToken);
+
   return (
     <div className="min-h-[100%] flex flex-col">
       {logInToken ? (

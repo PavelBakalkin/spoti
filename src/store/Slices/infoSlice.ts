@@ -8,8 +8,16 @@ export const fetchInfo = createAsyncThunk<
   ResponseType,
   RequestInfo,
   { rejectValue: FetchInfoError }
->("users/fetchInfo", async (request: RequestInfo, thunkApi) => {
-  const response = await axios.get(`${SEARCH_INFO}`);
+>("info/fetchInfo", async (request: RequestInfo, thunkApi) => {
+  const response = await axios.get(`${SEARCH_INFO}`, {
+    headers: {
+      Authorization: `Bearer ${request.token}`,
+    },
+    params: {
+      q: request.searchKey,
+      type: `${request.type}`,
+    },
+  });
 
   if (response.status !== 200) {
     return thunkApi.rejectWithValue({
@@ -17,7 +25,7 @@ export const fetchInfo = createAsyncThunk<
     });
   }
 
-  const data = await response.data;
+  const data = await response.data.artists;
 
   return { data: data };
 });
@@ -26,6 +34,7 @@ const initialState: InfoState = {
   token: "",
   status: "idle",
   error: null,
+  data: null,
 };
 
 const infoSlice = createSlice({
@@ -42,7 +51,7 @@ const infoSlice = createSlice({
     });
 
     builder.addCase(fetchInfo.fulfilled, (state, { payload }) => {
-      state.token = '';
+      state.data = payload.data;
       state.status = "idle";
     });
 
