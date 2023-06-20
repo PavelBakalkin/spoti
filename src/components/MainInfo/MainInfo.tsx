@@ -121,7 +121,7 @@ export const MainInfo = () => {
         </form>
       </div>
       <div className="overflow-auto mt-4 max-h-[42rem]">{renderArtists()}</div>
-      <div className="overflow-auto mt-4 max-h-[42rem]">{renderTracks()}</div>
+      {/* <div className="overflow-auto mt-4 max-h-[42rem]">{renderTracks()}</div> */}
       {/* <iframe className="rounded-xl w-full h-[32rem]" src="https://open.spotify.com/embed/playlist/1Wpkqq78l9bmM4UNUbotJ6?utm_source=generator&theme=0" frameBorder="0" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> */}
       {/* https://open.spotify.com/playlist/1Wpkqq78l9bmM4UNUbotJ6?si=9261ec48bbfc44de */}
     </div>
