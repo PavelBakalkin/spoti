@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export const Artist = () => {
   const logInToken = useAppSelector((state) => state.logIn.token);
+  const { name } = useParams<{ name: string }>();
   const dispatch = useAppDispatch();
 
   const [tracks, setTracks] = useState([]);
 
   const getTopTracks = async () => {
-    //artists.items[0].id;
-    let artistID = "";
+    let artistID = name;
 
     let artistTracks = await axios.get(
       `https://api.spotify.com/v1/artists/${artistID}/top-tracks`,
