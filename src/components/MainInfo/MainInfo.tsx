@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchInfo } from "../../store/Slices/infoSlice";
+import BlackBG from "../../images/BlackBG.avif";
+import axios from "axios";
 
 export const MainInfo = () => {
   const logInToken = useAppSelector((state) => state.logIn.token);
   const artists = useAppSelector((state) => state.info.data);
   const [searchKey, setSearchKey] = useState("");
   const dispatch = useAppDispatch();
+
+  const [tracks, setTracks] = useState([]);
 
   const searchArtists = async (e: any) => {
     e.preventDefault();
@@ -19,7 +23,39 @@ export const MainInfo = () => {
     );
   };
 
+  const getTopTracks = async () => {
+    let artistID = artists.items[0].id;
+
+    let artistTracks = await axios.get(
+      `https://api.spotify.com/v1/artists/${artistID}/top-tracks`,
+      {
+        headers: {
+          Authorization: `Bearer ${logInToken}`,
+        },
+        params: {
+          limit: 10,
+          market: "US",
+        },
+      }
+      // "https://api.spotify.com/v1/playlists/1Wpkqq78l9bmM4UNUbotJ6?si=9261ec48bbfc44de",
+      // {
+      //   headers: {
+      //     Authorization: `Bearer ${logInToken}`,
+      //   },
+      // }
+    );
+
+    setTracks(artistTracks.data.tracks);
+  };
+
+  useEffect(() => {
+    if (artists) {
+      getTopTracks();
+    }
+  }, [artists]);
+
   console.log(artists);
+  console.log(tracks);
 
   const renderArtists = () => {
     if (artists) {
@@ -28,9 +64,9 @@ export const MainInfo = () => {
           key={artist.id}
           className="bg-def-block my-4 rounded-2xl py-8 px-5 flex max-h-[10rem] "
         >
-          <div className="min-w-[5rem] mr-5 ">
+          <div className="min-w-[5rem] max-w-[5rem] mr-5 ">
             <img
-              src={artist.images[0].url}
+              src={artist.images.length ? artist.images[0].url : BlackBG}
               alt="ArtistImage"
               className="rounded-full h-[5rem] min-w-[100%] cursor-pointer"
             />
@@ -38,6 +74,28 @@ export const MainInfo = () => {
           <div className="text-xl cursor-pointer">
             <p>{artist.name}</p>
             <p>Followers: {artist.followers.total}</p>
+          </div>
+        </div>
+      ));
+    }
+  };
+
+  const renderTracks = () => {
+    if (tracks) {
+      return tracks.map((track: any) => (
+        <div
+          key={track.id}
+          className="bg-def-block my-4 rounded-2xl py-8 px-5 flex max-h-[10rem] "
+        >
+          <div className="min-w-[5rem] mr-5 ">
+            <img
+              src={track.album.images[0].url}
+              alt="ArtistImage"
+              className="rounded-full h-[5rem] min-w-[100%] cursor-pointer"
+            />
+          </div>
+          <div className="text-xl cursor-pointer">
+            <p>{track.name}</p>
           </div>
         </div>
       ));
@@ -62,7 +120,10 @@ export const MainInfo = () => {
           </button>
         </form>
       </div>
-      <div className="overflow-auto mt-4 h-[42rem]">{renderArtists()}</div>
+      <div className="overflow-auto mt-4 max-h-[42rem]">{renderArtists()}</div>
+      <div className="overflow-auto mt-4 max-h-[42rem]">{renderTracks()}</div>
+      {/* <iframe className="rounded-xl w-full h-[32rem]" src="https://open.spotify.com/embed/playlist/1Wpkqq78l9bmM4UNUbotJ6?utm_source=generator&theme=0" frameBorder="0" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> */}
+      {/* https://open.spotify.com/playlist/1Wpkqq78l9bmM4UNUbotJ6?si=9261ec48bbfc44de */}
     </div>
   );
 };
