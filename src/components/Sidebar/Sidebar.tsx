@@ -15,11 +15,22 @@ export const Sidebar = () => {
     );
   }, []);
 
-console.log(acc)
+  console.log(acc);
 
   return (
     <div className="lg:w-1/5 bg-def-block p-8 rounded-2xl">
-      {acc ? acc.display_name : ""}
+      <div className="flex items-center">
+        <div className="rounded-[50%] overflow-hidden w-10 h-10">
+          <img
+            className="object-cover w-full h-full"
+            src={`${acc ? acc.images[0].url : ''}`}
+            alt="acc"
+          />
+        </div>
+        <p className="font-medium text-lg !leading-3 ml-2.5">
+          {acc ? acc.display_name.toUpperCase() : ""}
+        </p>
+      </div>
     </div>
   );
 };
