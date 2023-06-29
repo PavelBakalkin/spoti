@@ -3,13 +3,15 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchInfo } from "../../store/Slices/infoSlice";
 import BlackBG from "../../images/BlackBG.avif";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const MainInfo = () => {
+  const navigate = useNavigate();
   const logInToken = useAppSelector((state) => state.logIn.token);
   const artists = useAppSelector((state) => state.info.data);
-  const [searchKey, setSearchKey] = useState("");
   const dispatch = useAppDispatch();
 
+  const [searchKey, setSearchKey] = useState("");
   const [tracks, setTracks] = useState([]);
 
   const searchArtists = async (e: any) => {
@@ -23,36 +25,40 @@ export const MainInfo = () => {
     );
   };
 
-  const getTopTracks = async () => {
-    let artistID = artists.items[0].id;
-
-    let artistTracks = await axios.get(
-      `https://api.spotify.com/v1/artists/${artistID}/top-tracks`,
-      {
-        headers: {
-          Authorization: `Bearer ${logInToken}`,
-        },
-        params: {
-          limit: 10,
-          market: "US",
-        },
-      }
-      // "https://api.spotify.com/v1/playlists/1Wpkqq78l9bmM4UNUbotJ6?si=9261ec48bbfc44de",
-      // {
-      //   headers: {
-      //     Authorization: `Bearer ${logInToken}`,
-      //   },
-      // }
-    );
-
-    setTracks(artistTracks.data.tracks);
+  const handleCheckArtist = (id: any) => {
+    navigate(`/artist-info/${id}`);
   };
 
-  useEffect(() => {
-    if (artists) {
-      getTopTracks();
-    }
-  }, [artists]);
+  // const getTopTracks = async () => {
+  //   let artistID = artists.items[0].id;
+
+  //   let artistTracks = await axios.get(
+  //     `https://api.spotify.com/v1/artists/${artistID}/top-tracks`,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${logInToken}`,
+  //       },
+  //       params: {
+  //         limit: 10,
+  //         market: "US",
+  //       },
+  //     }
+  //     // "https://api.spotify.com/v1/playlists/1Wpkqq78l9bmM4UNUbotJ6?si=9261ec48bbfc44de",
+  //     // {
+  //     //   headers: {
+  //     //     Authorization: `Bearer ${logInToken}`,
+  //     //   },
+  //     // }
+  //   );
+
+  //   setTracks(artistTracks.data.tracks);
+  // };
+
+  // useEffect(() => {
+  //   if (artists) {
+  //     getTopTracks();
+  //   }
+  // }, [artists]);
 
   console.log(artists);
   console.log(tracks);
@@ -69,6 +75,9 @@ export const MainInfo = () => {
               src={artist.images.length ? artist.images[0].url : BlackBG}
               alt="ArtistImage"
               className="rounded-full h-[5rem] min-w-[100%] cursor-pointer"
+              onClick={() => {
+                handleCheckArtist(artist.id);
+              }}
             />
           </div>
           <div className="text-xl cursor-pointer">

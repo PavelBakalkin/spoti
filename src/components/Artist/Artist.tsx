@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 
 export const Artist = () => {
   const logInToken = useAppSelector((state) => state.logIn.token);
   const { name } = useParams<{ name: string }>();
   const dispatch = useAppDispatch();
-
   const [tracks, setTracks] = useState([]);
 
   const getTopTracks = async () => {
@@ -37,25 +37,36 @@ export const Artist = () => {
 
   console.log(tracks);
 
+  useEffect(() => {
+    getTopTracks();
+  }, []);
+
   const renderTracks = () => {
     if (tracks) {
-      return tracks.map((track: any) => (
-        <div
-          key={track.id}
-          className="bg-def-block my-4 rounded-2xl py-8 px-5 flex max-h-[10rem] "
-        >
-          <div className="min-w-[5rem] mr-5 ">
-            <img
-              src={track.album.images[0].url}
-              alt="ArtistImage"
-              className="rounded-full h-[5rem] min-w-[100%] cursor-pointer"
-            />
+      return tracks.map((track: any, index: any) => {
+        let duration = moment.duration(track.duration_ms);
+        return (
+          <div
+            key={track.id}
+            className="bg-def-block my-2 rounded-2xl py-4 px-2 flex max-h-[10rem] items-center	"
+          >
+            <p>{index + 1}</p>
+            <div className="mx-5 overflow-hidden rounded-[50%] w-10 h-10">
+              <img
+                src={track.album.images[0].url}
+                alt="TopTrackImage"
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <div className=" mr-5 text-xl">
+              <p>{track.name}</p>
+            </div>
+            <p>
+              {duration.minutes()}:{duration.seconds()}
+            </p>
           </div>
-          <div className="text-xl cursor-pointer">
-            <p>{track.name}</p>
-          </div>
-        </div>
-      ));
+        );
+      });
     }
   };
 

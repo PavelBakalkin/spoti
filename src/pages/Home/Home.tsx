@@ -10,7 +10,7 @@ export const Home = () => {
         <Sidebar />
         <Routes>
           <Route path="/" element={<MainInfo />} />
-          <Route path="/users-posts/:id" element={<Artist />} />
+          <Route path="/artist-info/:name" element={<Artist />} />
         </Routes>
       </div>
     </main>

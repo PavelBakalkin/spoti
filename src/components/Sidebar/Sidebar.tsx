@@ -13,6 +13,7 @@ export const Sidebar = () => {
         token: logInToken ? logInToken : "",
       })
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log(acc);
@@ -23,7 +24,7 @@ export const Sidebar = () => {
         <div className="rounded-[50%] overflow-hidden w-10 h-10">
           <img
             className="object-cover w-full h-full"
-            src={`${acc ? acc.images[0].url : ''}`}
+            src={`${acc ? acc.images[0].url : ""}`}
             alt="acc"
           />
         </div>
